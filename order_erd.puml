@@ -1,0 +1,116 @@
+P
+@startuml
+title ERD - QUAN LY DON DAT HANG
+
+left to right direction
+skinparam linetype ortho
+skinparam shadowing false
+skinparam entity {
+    BackgroundColor #F4F7FB
+    BorderColor #34495E
+    FontColor #172B4D
+}
+skinparam ArrowColor #526579
+skinparam defaultFontName Arial
+skinparam roundcorner 8
+
+' ==========================================
+' 1. CAC THUC THE
+' ==========================================
+
+entity "DON VI KHACH" as DV {
+    * MaDV : int <<PK>>
+    --
+    TenDV : varchar
+    DiaChi : varchar
+    DienThoai : varchar
+}
+
+entity "DON DAT HANG" as DDH {
+    * SoDH : int <<PK>>
+    --
+    NgayDat : date
+    MaDV : int <<FK>>
+    MaND : int <<FK>>
+}
+
+entity "NGUOI DAT" as ND {
+    * MaND : int <<PK>>
+    --
+    HoTenND : varchar
+    MaDV : int <<FK>>
+}
+
+entity "HANG" as HANG {
+    * MaHang : int <<PK>>
+    --
+    TenHang : varchar
+    DonViTinh : varchar
+    MoTaHang : varchar
+}
+
+entity "CHI TIET DON DAT HANG" as CTDDH {
+    * SoDH : int <<PK, FK>>
+    * MaHang : int <<PK, FK>>
+    --
+    SoLuong : int
+}
+
+entity "PHIEU GIAO HANG" as PGH {
+    * SoPG : int <<PK>>
+    --
+    NgayGiao : date
+    MaDV : int <<FK>>
+    MaDDG : int <<FK>>
+    MaNN : int <<FK>>
+    MaNG : int <<FK>>
+}
+
+entity "CHI TIET PHIEU GIAO" as CTPG {
+    * SoPG : int <<PK, FK>>
+    * MaHang : int <<PK, FK>>
+    --
+    SoLuong : int
+    DonGia : decimal
+    ThanhTien : decimal
+}
+
+entity "NOI GIAO" as DDG {
+    * MaDDG : int <<PK>>
+    --
+    TenNoiGiao : varchar
+}
+
+entity "NGUOI NHAN" as NN {
+    * MaNN : int <<PK>>
+    --
+    HoTenNN : varchar
+    MaDV : int <<FK>>
+}
+
+entity "NGUOI GIAO" as NG {
+    * MaNG : int <<PK>>
+    --
+    HoTenNG : varchar
+}
+
+' ==========================================
+' 2. CAC MOI QUAN HE
+' ==========================================
+
+DV ||--o{ DDH : dat hang
+DV ||--o{ ND : co nguoi dat
+ND ||--o{ DDH : lap don
+
+DDH ||--|{ CTDDH : gom
+HANG ||--o{ CTDDH : duoc dat
+
+DV ||--o{ PGH : nhan hang
+DDG ||--o{ PGH : giao tai
+NN ||--o{ PGH : nguoi nhan
+NG ||--o{ PGH : nguoi giao
+
+PGH ||--|{ CTPG : gom
+HANG ||--o{ CTPG : duoc giao
+
+@enduml
